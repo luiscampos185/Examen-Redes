@@ -7,6 +7,8 @@ vlan 33
  name gestion_TI
 vlan 34
  name gestion_de_wlan
+vlan 35
+name ventas
 vlan 36
  name COMPRAS
  vlan 37
@@ -18,9 +20,9 @@ exit
 Paso X: Configurar los Puertos de las PCs (Acceso)
 
 ! COMPRAS
-interface  fa0/2
+interface range fa0/1-2
  switchport mode access
- switchport access vlan 34
+ switchport trunk allowed vlan 33,34,35,36,37
  no shutdown
 exit
 
