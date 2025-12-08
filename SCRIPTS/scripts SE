@@ -1,0 +1,1041 @@
+//configuracion Switch server//
+
+
+
+enable
+
+configure terminal
+
+hostname DSW1
+
+
+
+! --- PASO 1: Configurar VTP y VLANs ---
+
+vtp domain JuanMark
+
+vtp version 2
+
+vtp mode server
+
+vtp password cisco
+
+
+
+! Crear las VLANs (Solo se hace aquí)
+
+vlan 65
+
+ name Ventas
+
+vlan 66
+
+ name Gestion_TI
+
+vlan 67
+
+ name Compras
+
+vlan 68
+
+ name MKT
+
+exit
+
+
+
+! --- PASO 2: Configurar EtherChannel (Hacia otro Switch) ---
+
+! Asumimos que g0/1 y g0/2 son los cables dobles hacia el otro switch
+
+interface range g1/0/1-2
+
+ channel-protocol pagp
+
+ channel-group 1 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+ ! --- PASO 2: Configurar EtherChannel (Hacia otro Switch) ---
+
+! Asumimos que g0/1 y g0/2 son los cables dobles hacia el otro switch
+
+interface range g1/0/3-4
+
+ channel-protocol pagp
+
+ channel-group 2 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+ ! --- PASO 2: Configurar EtherChannel (Hacia otro Switch) ---
+
+! Asumimos que g0/1 y g0/2 son los cables dobles hacia el otro switch
+
+interface range g1/0/5-6
+
+ channel-protocol pagp
+
+ channel-group 3 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal (Lógico) ---
+
+interface Port-channel 1
+
+ ! Si el switch es Capa 3 (Multilayer), descomenta la siguiente línea:
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal (Lógico) ---
+
+interface Port-channel 2
+
+ ! Si el switch es Capa 3 (Multilayer), descomenta la siguiente línea:
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal (Lógico) ---
+
+interface Port-channel 3
+
+ ! Si el switch es Capa 3 (Multilayer), descomenta la siguiente línea:
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal (Lógico) ---
+
+interface gig1/0/7
+
+ ! Si el switch es Capa 3 (Multilayer), descomenta la siguiente línea:
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+
+
+
+
+! --- PASO 4: Enlace hacia el Router (Sin EtherChannel generalmente) ---
+
+interface g1/0/24
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ no shutdown
+
+ exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+ //switch1//
+
+
+
+ enable
+
+configure terminal
+
+hostname ASW1
+
+
+
+! --- PASO 1: Configurar VTP (Modo Cliente) ---
+
+vtp domain JuanMark
+
+vtp version 2
+
+vtp mode client
+
+vtp password cisco
+
+! NOTA: Aquí NO creamos VLANs, se aprenderán solas.
+
+
+
+! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/1-2
+
+ channel-protocol pagp
+
+ channel-group 1 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+ ! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/3-4
+
+ channel-protocol pagp
+
+ channel-group 2 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+  ! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/5-6
+
+ channel-protocol pagp
+
+ channel-group 3 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 1
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 2
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 3
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+  ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/8
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/7
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+! --- PASO 4: Asignar Puertos a PCs (Ejemplos) ---
+
+! Puerto para una PC de Ventas
+
+interface f0/10
+
+ switchport mode access
+
+ switchport access vlan 65
+
+ spanning-tree portfast
+
+ no shutdown
+
+ exit
+
+
+
+! Puerto para una PC de TI
+
+interface f0/11
+
+ switchport mode access
+
+ switchport access vlan 66
+
+ spanning-tree portfast
+
+ no shutdown
+
+ exit
+
+
+
+  //switch2//
+
+
+
+
+
+
+
+enable
+
+configure terminal
+
+hostname ASW2
+
+
+
+! --- PASO 1: Configurar VTP (Modo Cliente) ---
+
+vtp domain JuanMark
+
+vtp version 2
+
+vtp mode client
+
+vtp password cisco
+
+! NOTA: Aquí NO creamos VLANs, se aprenderán solas.
+
+
+
+! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/1-2
+
+ channel-protocol pagp
+
+ channel-group 1 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+ ! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/3-4
+
+ channel-protocol pagp
+
+ channel-group 2 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+  ! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/5-6
+
+ channel-protocol pagp
+
+ channel-group 3 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 1
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 2
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 3
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1, 65-68
+
+ exit
+
+
+
+  ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/8
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/7
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+! --- PASO 4: Asignar Puertos a PCs (Ejemplos) ---
+
+! Puerto para una PC de Ventas
+
+interface f0/10
+
+ switchport mode access
+
+ switchport access vlan 65
+
+ spanning-tree portfast
+
+ no shutdown
+
+ exit
+
+
+
+! Puerto para una PC de TI
+
+interface f0/11
+
+ switchport mode access
+
+ switchport access vlan 66
+
+ spanning-tree portfast
+
+ no shutdown
+
+ exit
+
+
+
+
+
+
+
+
+
+   //switch3//
+
+enable
+
+configure terminal
+
+hostname ASW3
+
+
+
+! --- PASO 1: Configurar VTP (Modo Cliente) ---
+
+vtp domain JuanMark
+
+vtp version 2
+
+vtp mode client
+
+vtp password cisco
+
+! NOTA: Aquí NO creamos VLANs, se aprenderán solas.
+
+
+
+! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/1-2
+
+ channel-protocol pagp
+
+ channel-group 1 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 1
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/3
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/4
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+  ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/5
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/6
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+    //switch4//
+
+
+
+enable
+
+configure terminal
+
+hostname ASW4
+
+
+
+! --- PASO 1: Configurar VTP (Modo Cliente) ---
+
+vtp domain JuanMark
+
+vtp version 2
+
+vtp mode client
+
+vtp password cisco
+
+! NOTA: Aquí NO creamos VLANs, se aprenderán solas.
+
+
+
+! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/1-2
+
+ channel-protocol pagp
+
+ channel-group 1 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 1
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/3
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/4
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+  ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/5
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/6
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+
+
+
+
+     //switch5//
+
+enable
+
+configure terminal
+
+hostname ASW5
+
+
+
+! --- PASO 1: Configurar VTP (Modo Cliente) ---
+
+vtp domain JuanMark
+
+vtp version 2
+
+vtp mode client
+
+vtp password cisco
+
+! NOTA: Aquí NO creamos VLANs, se aprenderán solas.
+
+
+
+! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/1-2
+
+ channel-protocol pagp
+
+ channel-group 1 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+ ! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/3-4
+
+ channel-protocol pagp
+
+ channel-group 2 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+  ! --- PASO 2: Configurar EtherChannel (Hacia arriba/Distribución) ---
+
+interface range g1/0/5-6
+
+ channel-protocol pagp
+
+ channel-group 3 mode desirable
+
+ no shutdown
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 1
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 2
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+ ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface Port-channel 3
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+  ! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/8
+
+  switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+! --- PASO 3: Configurar el Troncal en el Canal ---
+
+interface g1/0/7
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+
+
+
+
+
+
+ enable
+configure terminal
+hostname ASW1_Capa2
+
+! --- PASO 0: LIMPIEZA (Vital para arreglar las luces naranjas) ---
+! Borramos cualquier configuración vieja que esté causando conflicto
+no interface Port-channel 1
+! Usamos g0/1 y g0/2 porque suelen ser los puertos Gigabit de los 2960
+default interface range g0/1-2
+
+! --- PASO 1: VTP CLIENTE (Obrero) ---
+vtp domain JuanMark
+vtp version 2
+vtp mode client
+vtp password cisco
+
+! --- PASO 2: ETHERCHANNEL (Uplink hacia el Distribución) ---
+! Configuración de los puertos físicos
+interface range fa0/1-2
+
+ switchport trunk encapsulation dot1q
+
+ switchport mode trunk
+
+ switchport nonegotiate
+
+ switchport trunk allowed vlan 1,65-68
+
+ exit
+
+! --- PASO 3: ASEGURAR EL CANAL LÓGICO ---
+interface Port-channel 1
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+ exit
+
+! --- PASO 4: PUERTOS DE ACCESO (PCs / APs) ---
+! Ejemplo para una PC de Ventas (VLAN 65)
+interface f0/10
+ switchport mode access
+ switchport access vlan 65
+ spanning-tree portfast
+ no shutdown
+ exit
+
+! Ejemplo para una PC de TI (VLAN 66)
+interface f0/11
+ switchport mode access
+ switchport access vlan 66
+ spanning-tree portfast
+ no shutdown
+ exit
