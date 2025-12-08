@@ -1,0 +1,629 @@
+Configuracion switch (arriba)
+
+enable
+configure terminal
+
+vlan 33
+ name gestion_TI
+vlan 34
+ name gestion_de_wlan
+vlan 36
+ name COMPRAS
+ vlan 37
+ name PRACTICANTE
+exit
+
+
+
+Paso X: Configurar los Puertos de las PCs (Acceso)
+
+! COMPRAS
+interface  fa0/2
+ switchport mode access
+ switchport access vlan 34
+ no shutdown
+exit
+
+
+
+
+Paso X: Configurar el Enlace Troncal (Hacia el Switch de Arriba)
+int fa0/1
+ switchport mode trunk
+ switchport trunk native vlan 33
+ no shutdown
+exit
+
+-----------------------------------------------
+Configuracion switch (abajo)
+
+enable
+configure terminal
+
+vlan 33
+ name gestion_TI
+vlan 34
+ name gestion de WLAN
+vlan 36
+ name COMPRAS
+ vlan 37
+ name PRACTICANE(WLAN)
+exit
+
+
+
+Paso X: Configurar los Puertos de las PCs (Acceso)
+
+! COMPRAS
+interface  fa0/2
+ switchport mode access
+ switchport access vlan 36
+ no shutdown
+exit
+
+
+
+! IT
+interface fa0/3
+ switchport mode access
+ switchport access vlan 33
+ no shutdown
+exit
+
+
+Paso X: Configurar el Enlace Troncal (Hacia el Switch de Arriba)
+int Gig0/1
+ switchport mode trunk
+ switchport trunk native vinterface GigabitEthernet0/0/0
+ no shutdown
+ exit
+
+ interface GigabitEthernet0/0/0.33
+ encapsulation dot1q 33 native
+ ip address 148.60.34.1 255.255.255.0
+ exit
+ 
+ 
+! Subinterfaz para VLAN 5 (Nativa)
+interface GigabitEthernet0/0/0.34
+ encapsulation dot1q 34 native
+ ip address 148.60.34.1 255.255.0.0
+ exit
+ 
+ 
+ interface GigabitEthernet0/0/0.35
+ encapsulation dot1q 35 native
+ ip address 148.60.35.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.36
+ encapsulation dot1q 36 native
+ ip address 148.60.36.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.37
+ encapsulation dot1q 37 native
+ ip address 148.60.37.1 255.255.0.0
+ exitlan 33
+ no shutdown
+exit
+
+-----------------------------------------------
+Configuracion del multilayer
+-----------------------------------------------
+***Paso 1: Crear VLANs***
+enableinterface GigabitEthernet0/0/0
+ no shutdown
+ exit
+
+ interface GigabitEthernet0/0/0.33
+ encapsulation dot1q 33 native
+ ip address 148.60.34.1 255.255.255.0
+ exit
+ 
+ 
+! Subinterfaz para VLAN 5 (Nativa)
+interface GigabitEthernet0/0/0.34
+ encapsulation dot1q 34 native
+ ip address 148.60.34.1 255.255.0.0
+ exit
+ 
+ 
+ interface GigabitEthernet0/0/0.35
+ encapsulation dot1q 35 native
+ ip address 148.60.35.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.36
+ encapsulation dot1q 36 native
+ ip address 148.60.36.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.37
+ encapsulation dot1q 37 native
+ ip address 148.60.37.1 255.255.0.0
+ exit
+configure terminal
+vlan 33
+ name gestion_TI
+vlan 34
+ name gestion_de_wlan
+vlan 35
+ name ventas
+ vlan 36
+ name compras
+  vlan 37
+ name practicante 
+exit
+
+*** Paso 2:  Configurar el Troncal que BAJA***
+
+interface GigabitEthernet1/0/5
+ switchport mode trunkinterface GigabitEthernet0/0/0
+ no shutdown
+ exit
+
+ interface GigabitEthernet0/0/0.33
+ encapsulation dot1q 33 native
+ ip address 148.60.34.1 255.255.255.0
+ exit
+ 
+ 
+! Subinterfaz para VLAN 5 (Nativa)
+interface GigabitEthernet0/0/0.34
+ encapsulation dot1q 34 native
+ ip address 148.60.34.1 255.255.0.0
+ exit
+ 
+ 
+ interface GigabitEthernet0/0/0.35
+ encapsulation dot1q 35 native
+ ip address 148.60.35.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.36
+ encapsulation dot1q 36 native
+ ip address 148.60.36.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.37
+ encapsulation dot1q 37 native
+ ip address 148.60.37.1 255.255.0.0
+ exit
+ switchport trunk native vlan 33
+ no shutdown
+exit
+
+*** Paso 3:  Configurar el Troncal que SUBE***
+
+interface GigabitEthernet1/0/2  
+ switchport mode trunk
+ switchport trunk native vlan 33
+ no shutdown
+exit
+
+interface GigabitEthernet1/0/1 
+ switchport mode trunkinterface GigabitEthernet0/0/0
+ no shutdown
+ exit
+
+ interface GigabitEthernet0/0/0.33
+ encapsulation dot1q 33 native
+ ip address 148.60.34.1 255.255.255.0
+ exit
+ 
+ 
+! Subinterfaz para VLAN 5 (Nativa)
+interface GigabitEthernet0/0/0.34
+ encapsulation dot1q 34 native
+ ip address 148.60.34.1 255.255.0.0
+ exit
+ 
+ 
+ interface GigabitEthernet0/0/0.35
+ encapsulation dot1q 35 native
+ ip address 148.60.35.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.36
+ encapsulation dot1q 36 native
+ ip address 148.60.36.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.37
+ encapsulation dot1q 37 native
+ ip address 148.60.37.1 255.255.0.0
+ exit
+ switchport trunk native vlan 33
+ no shutdown
+exit
+
+
+***Paso 4:Configurar Puertos para WLC y AP***
+! Puerto para el WLC
+interface GigabitEthernet1/0/11
+ description WLC_WIFI
+ switchport mode access
+ switchport access vlan 5
+ no shutdown
+exit
+
+! Puerto para el Access Point
+interface GigabitEthernet1/0/4
+ description ACCESS_POINT
+ switchport mode access
+ switchport access vlan 5
+ no shutdown
+exit
+
+
+
+
+
+
+----------------------------------
+------------------------------
+multicapya de arriba
+
+***Paso 1: Crear VLANs***
+enable
+configure terminal
+vlan 33
+ name gestion_TI
+vlan 34
+ name gestion_de_wlan
+vlan 35
+ name ventas
+ vlan 36
+ name compras
+  vlan 37
+ name practicante 
+exit
+
+*** Paso 2:  Configurar el Troncal que BAJA***
+
+interface GigabitEthernet1/0/3
+ switchport mode trunk
+ switchport trunk native vlan 33
+ no shutdown
+exit
+
+*** Paso 3:  Configurar el Troncal que SUBE***
+
+interface GigabitEthernet1/0/2  
+ switchport mode trunk
+ switchport trunk native vlan 33
+ no shutdown
+exit
+
+interface GigabitEthernet1/0/1 
+ switchport mode trunk
+ switchport trunk native vlan 33
+ no shutdown
+exit
+
+
+***Paso 4:Configurar Puertos para WLC y AP***
+! Puerto para el WLC
+interface GigabitEthernet1/0/4
+ description WLC_WIFI
+ switchport mode access
+ switchport access vlan 35
+ no shutdown
+exit
+
+interface GigabitEthernet1/0/4
+ description WLC_WIFI
+ switchport mode access
+ switchport access vlan 37
+ no shutdown
+exit
+
+! Puerto para el Access Point
+interface GigabitEthernet1/0/4
+ description ACCESS_POINT
+ switchport mode access
+ switchport access vlan 5
+ no shutdown
+exit
+
+-----------------------------------
+Router
+----------------------------------
+
+***Paso 1: Configurar el Servidor DHCP***
+
+enable
+configure terminal
+
+! 1. EXCLUSIONES (Reservar las primeras 10 IPs para que no las entregue)
+ip dhcp excluded-address 148.60.33.1 148.60.33.10
+ip dhcp excluded-address 148.60.34.1 148.60.34.10
+ip dhcp excluded-address 148.60.35.1 148.60.35.10
+ip dhcp excluded-address 148.60.36.1 148.60.36.10
+ip dhcp excluded-address 148.60.37.1 148.60.37.10
+
+
+! 2. POOL PARA VLAN 33 (ti)
+ip dhcp pool Ventas
+ network 148.60.33.0 255.255.0.0
+ default-router 148.60.33.1
+ dns-server 8.8.8.8
+
+! 3. POOL PARA VLAN 20 (Sistemas)
+ip dhcp pool Ventas
+ network 148.60.34.0 255.255.0.0
+ default-router 148.60.34.1
+ dns-server 8.8.8.8
+
+! 4. POOL PARA VLAN 5 
+ip dhcp pool Ventas
+ network 148.60.35.0 255.255.0.0
+ default-router 148.60.35.1
+ dns-server 8.8.8.8
+ 
+ ip dhcp pool Ventas
+ network 148.60.36.0 255.255.0.0
+ default-router 148.60.36.1
+ dns-server 8.8.8.8
+ 
+ ip dhcp pool Ventas
+ network 148.60.37.0 255.255.0.0
+ default-router 148.60.37.1
+ dns-server 8.8.8.8
+
+***Paso 2: Configurar las Interfaces "Router-on-a-Stick" (Hacia abajo)***
+
+! Encender la interfaz física
+interface GigabitEthernet0/0/0
+ no shutdown
+ exit
+
+ interface GigabitEthernet0/0/0.33
+ encapsulation dot1q 33 native
+ ip address 148.60.34.1 255.255.255.0
+ exit
+ 
+ 
+! Subinterfaz para VLAN 5 (Nativa)
+interface GigabitEthernet0/0/0.34
+ encapsulation dot1q 34 native
+ ip address 148.60.34.1 255.255.0.0
+ exit
+ 
+ 
+ interface GigabitEthernet0/0/0.35
+ encapsulation dot1q 35 native
+ ip address 148.60.35.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.36
+ encapsulation dot1q 36 native
+ ip address 148.60.36.1 255.255.0.0
+ exit
+ 
+ interface GigabitEthernet0/0/0.37
+ encapsulation dot1q 37 native
+ ip address 148.60.37.1 255.255.0.0
+ exit
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+! Subinterfaz para VLAN 10 (Ventas)
+interface GigabitEthernet0/0.10
+ encapsulation dot1q 10
+ ip address 192.168.10.1 255.255.255.0
+ exit
+
+! Subinterfaz para VLAN 20 (Sistemas)
+interface GigabitEthernet0/0.20
+ encapsulation dot1q 20
+ ip address 192.168.20.1 255.255.255.0
+ exit
+
+***Paso 3: Configurar la conexión hacia los Servidores (Hacia la derecha)***
+
+interface GigabitEthernet0/1
+ ip address 192.168.100.1 255.255.255.0
+ no shutdown
+ exit
+
+-------------------------
+switch ARRIBA
+--------------------------
+enable
+configure terminal
+
+! Configurar el puerto que viene del Router
+interface g0/1
+ switchport mode access
+ no shutdown
+exit
+
+! Configurar el puerto que va al RADIUS
+interface fa0/1
+ switchport mode access
+ no shutdown
+exit
+
+
+----------------------------
+Radius
+----------------------------
+
+1. Configuración de Red (IP)
+El servidor necesita tener una dirección fija para que el WLC pueda encontrarlo.
+
+Dónde: Pestaña Desktop > IP Configuration.
+
+Qué poner:
+
+IP Address: 192.168.100.20
+
+Subnet Mask: 255.255.255.0
+
+Default Gateway: 192.168.100.1 (La IP del Router que configuraste antes).
+
+
+
+-----------------
+AP
+-----------------
+
+
+--------------------
+WLC -Usar el 2504
+-------------------
+***Paso 1: Configurar la IP del WLC***
+Primero necesitamos asignarle su dirección IP fija para poder entrar a administrarlo.
+
+Haz clic en el Wireless LAN Controller.
+
+Ve a la pestaña Config > Management.
+
+Configura esto:
+
+IP Address: 192.168.5.2
+
+Subnet Mask: 255.255.255.0
+
+Default Gateway: 192.168.5.1
+
+DNS Server: 8.8.8.8
+
+
+*** Paso 2: Configuración Vía Web***
+http://192.168.5.2
+
+
+Nombre: admin
+Contraseña: Cisco123
+
+
+PASO 1: Configuración del Asistente (Setup Wizard)
+System Name: Ponle WLC (o lo que gustes).
+
+Date and Time: Déjalo como está.
+
+Management Interface (¡CUIDADO AQUÍ!):
+
+IP Address: 192.168.5.2 (Debe estar ya puesta).
+
+Subnet Mask: 255.255.255.0
+
+Default Gateway: 192.168.5.1
+
+Management VLAN ID: ⚠️ Ponlo en 0 ⚠️
+
+***********************************
+
+Wireless Networks:
+
+Network Name: temp (Es una red temporal para pasar el asistente).
+
+Security: WPA2 Personal.
+
+Passphrase: Cisco123.
+
+Virtual Interface: Déjalo como viene (suele ser 1.1.1.1).
+
+Dale al botón Next y luego a Apply.
+
+***********************************
+Siguiente paso (Cuando haya reiniciado)
+Una vez que las luces del WLC vuelvan a estar en verde:
+
+Vuelve a abrir el navegador en la PC.
+
+Entra a https://192.168.5.2 (Recuerda la "s" de https y aceptar las advertencias de seguridad).
+
+Loguéate con el usuario que creaste (admin / Cisco123).
+
+
+******************************************
+
+
+----------------------------------------------
+Configuracion del WLC
+-----------------------------------------------
+PASO 1: Conectar el WLC con el Servidor RADIUS
+Primero le decimos al WLC dónde está el servidor de seguridad.
+
+En el menú superior, haz clic en SECURITY.
+
+En el menú de la izquierda, busca y expande AAA > RADIUS > Authentication.
+
+A la derecha, haz clic en el botón New...
+
+Llena estos datos:
+
+Server IP Address: 192.168.100.20
+
+Shared Secret: cisco123
+
+Confirm Shared Secret: cisco123
+
+Port Number: 1812 (Déjalo así).
+
+Server Status: Selecciona Enabled (¡Muy importante!).
+
+Haz clic en el botón Apply (arriba a la derecha).
+
+********************************************************
+
+PASO 2: Crear la Red Wi-Fi (SSID Corporativo)
+Ahora crearemos la red que verán las laptops.
+
+En el menú superior, haz clic en WLANs.
+
+Verás la lista de redes. Arriba a la derecha, donde dice "Create New", dale al botón Go.
+
+Llena los datos básicos:
+
+Type: WLAN
+
+Profile Name: Corporativo
+
+SSID: Corporativo (Este es el nombre que sale en el Wi-Fi).
+
+Haz clic en Apply.
+
+Ahora se abrirá la pantalla de edición de esa red. Configura estas 3 pestañas:
+
+Pestaña [General]:
+
+Status: Marca la casilla Enabled (Si no, la red no aparece).
+
+Interface/Interface Group: Selecciona management.
+
+Pestaña [Security]:
+
+Ve a la sub-pestaña Layer 2.
+
+Layer 2 Security: Selecciona WPA+WPA2.
+
+Más abajo, marca la casilla WPA2 Policy.
+
+En "Authentication Key Management", marca la casilla 802.1X.
+
+Pestaña [Security] > Sub-pestaña [AAA Servers]:
+
+En la sección "Authentication Servers", despliega la lista "Server 1" y selecciona la IP 192.168.100.20.
+
+Haz clic en Apply.
+
+
+******************************************************************
+
+
+
+
+
+
