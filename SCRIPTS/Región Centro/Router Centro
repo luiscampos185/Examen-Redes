@@ -1,0 +1,99 @@
+!Router centro
+enable
+conf t
+hostname Router-Centro
+
+!--subinterfaces
+interface GigabitEthernet0/0
+no shutdown
+exit
+
+interface GigabitEthernet0/0.33
+encapsulation dot1q 33
+ip address 148.60.33.1 255.255.255.0
+exit
+interface GigabitEthernet0/0.34
+encapsulation dot1q 34
+ip address 148.60.34.1 255.255.255.0
+exit
+interface GigabitEthernet0/0.35
+encapsulation dot1q 35
+ip address 148.60.35.1 255.255.255.0
+exit
+interface GigabitEthernet0/0.36
+encapsulation dot1q 36
+ip address 148.60.36.1 255.255.255.0
+exit
+interface GigabitEthernet0/0.37
+encapsulation dot1q 37
+ip address 148.60.37.1 255.255.255.0
+exit
+
+!--DHCP
+ip dhcp excluded-address 148.60.33.1 148.60.33.10
+ip dhcp excluded-address 148.60.34.1 148.60.34.10
+ip dhcp excluded-address 148.60.35.1 148.60.35.10
+ip dhcp excluded-address 148.60.36.1 148.60.36.10
+ip dhcp excluded-address 148.60.37.1 148.60.37.10
+
+ip dhcp pool VLAN33-TI
+network 148.60.33.0 255.255.255.0
+default-router 148.60.33.1
+dns-server 8.8.8.8
+
+ip dhcp pool VLAN34-WLAN
+network 148.60.34.0 255.255.255.0
+default-router 148.60.34.1
+option 43 ip 148.60.34.10
+dns-server 8.8.8.8
+
+ip dhcp pool VLAN35-VENTAS
+network 148.60.35.0 255.255.255.0
+default-router 148.60.35.1
+dns-server 8.8.8.8
+
+ip dhcp pool VLAN36-COMPRAS
+network 148.60.36.0 255.255.255.0
+default-router 148.60.36.1
+dns-server 8.8.8.8
+
+ip dhcp pool VLAN37-PRACTICANTE
+network 148.60.37.0 255.255.255.0
+default-router 148.60.37.1
+dns-server 8.8.8.8
+
+!---RIP
+
+router rip
+version 2
+no auto-summary
+network 148.60.0.0
+
+passive-interface GigabitEthernet0/0.33
+passive-interface GigabitEthernet0/0.34
+passive-interface GigabitEthernet0/0.35
+passive-interface GigabitEthernet0/0.36
+passive-interface GigabitEthernet0/0.37
+exit
+
+
+configure terminal
+interface GigabitEthernet0/0
+description WAN-Link-to-Multiusuario
+ip address 148.60.1.1 255.255.255.252
+no shutdown
+end
+
+
+!--SSH
+configure terminal
+ip domain-name JuanMark.com
+username admin secret Cisco123
+crypto key generate rsa general-keys modulus 1024
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 2
+line vty 0 15
+ transport input ssh
+ login local
+exit

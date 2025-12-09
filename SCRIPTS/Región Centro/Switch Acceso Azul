@@ -1,0 +1,60 @@
+!--Switch Acceso Azul
+enable
+configure terminal
+hostname Switch-Acceso-Azul
+
+!--vlans
+vlan 33 name GESTION-TI
+vlan 34 name GESTION-WLAN
+vlan 35 name VENTAS
+vlan 36 name COMPRAS
+vlan 37 name PRACTICANTES
+exit
+
+!--trunk al muytilayer
+interface FastEthernet0/1
+description Uplink-a-MLS-Azul
+switchport mode trunk
+switchport nonegotiate
+switchport trunk allowed vlan 33-37,1
+no shutdown
+exit
+
+!--puertos de acceso
+
+interface FastEthernet0/2
+switchport mode access
+witchport access vlan 33
+no shutdown
+exit
+
+interface FastEthernet0/3
+switchport mode access
+switchport access vlan 36
+no shutdown
+exit
+
+!--port security
+interface range FastEthernet0/2 - 3
+switchport mode access
+switchport port-security
+switchport port-security maximum 1
+switchport port-security violation shutdown
+switchport port-security mac-address sticky
+exit
+
+
+!---DAI
+ip arp inspection vlan 33-37
+interface FastEthernet0/1
+ip arp inspection trust
+exit
+
+!--vtp
+vtp domain juanmark
+vtp version 2
+vtp mode client
+vtp password cisco
+exit
+
+

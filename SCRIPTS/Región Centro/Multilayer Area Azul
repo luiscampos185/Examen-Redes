@@ -1,0 +1,80 @@
+!--Multilayer Area Azul
+enable
+configure terminal
+hostname MLS-Azul
+
+!--port channel
+interface range GigabitEthernet0/1 - 2
+shutdown
+channel-protocol pagp
+channel-group 1 mode desirable
+no shutdown
+exit
+
+interface port-channel 1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport nonegotiate
+switchport trunk allowed vlan 33-37,1
+exit
+
+
+!---Trunk hacia Switch Acceso Azuk
+interface FastEthernet0/1
+description Bajada-a-Switch-Acceso-Azul
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport nonegotiate
+switchport trunk allowed vlan 33-37,1
+no shutdown
+exit
+
+!---puertos de acceso
+
+interface FastEthernet0/3
+switchport mode access
+switchport access vlan 36
+no shutdown
+exit
+
+interface FastEthernet0/10
+switchport mode access
+switchport access vlan 36
+no shutdown
+exit
+
+interface FastEthernet0/4
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport nonegotiate
+switchport trunk allowed vlan 33-37,1
+ip dhcp snooping trust
+ip arp inspection trust
+no shutdown
+exit
+
+
+!--DAI
+ip arp inspection vlan 33-37
+ip arp inspection validate src-mac dst-mac ip
+
+interface range GigabitEthernet0/1 - 2
+ip arp inspection trust
+exit
+
+interface FastEthernet0/4
+ip arp inspection trust
+exit
+
+interface FastEthernet0/3
+ip arp inspection trust
+exit
+
+!--VTP cliente
+
+vtp domain juanmark
+vtp version 2
+vtp mode client
+vtp password cisco
+exit
+

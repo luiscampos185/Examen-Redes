@@ -1,0 +1,76 @@
+!----------------
+!MULTILAYER AREA VERDE
+
+
+enable
+configure terminal
+hostname MLS-Verde
+
+!----port-channel
+
+interface range GigabitEthernet0/1 - 2
+ shutdown
+ channel-protocol pagp
+ channel-group 1 mode desirable
+ no shutdown
+exit
+
+interface port-channel 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 33-37,1
+exit
+
+
+!---trunk hacia el switch
+
+interface FastEthernet0/1
+ description Bajada-hacia-Switch0-Verde
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 33-37,1
+ no shutdown
+exit
+
+
+!----puertos de usuario
+
+interface FastEthernet0/4
+ description Server-TI
+ switchport mode access
+ switchport access vlan 33
+ no shutdown
+exit
+
+interface FastEthernet0/3
+ description PC-Admin
+ switchport mode access
+ switchport access vlan 33
+ no shutdown
+exit
+
+
+!---DAI
+ip arp inspection vlan 33-37
+ip arp inspection validate src-mac dst-mac ip
+
+interface range GigabitEthernet0/1 - 2
+ ip arp inspection trust
+exit
+
+interface FastEthernet0/1
+ ip arp inspection trust
+exit
+
+
+!----VTP
+vtp mode client
+vtp domain juanmark.com
+vtp password cisco
+ip dhcp snooping
+ip dhcp snooping vlan 33,34,35,36,37
+spanning-tree mode pvst
+spanning-tree vlan 33-37 root primary
+exit
