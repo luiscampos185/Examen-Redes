@@ -9,9 +9,9 @@ Topología: Región Noroeste
 [cite_start]Este repositorio contiene la configuración específica de la Región Noroeste, la cual actúa como un punto crítico de la red al albergar la conexión a **Internet** y funcionar como el **Servidor VTP** maestro para toda la organización[cite: 22, 29].
 
 Características de la Región
-* [cite_start]**Rol VTP:** Server (Administra las VLANs de todas las regiones: Centro, Noreste, Sureste)[cite: 45].
-* [cite_start]**Protocolo de Ruteo:** RIPv2 y RIPng (IPv6)[cite: 16].
-* [cite_start]**Direccionamiento:** Dual Stack (IPv4 / IPv6) con prefijo global `2006:AFEA:B0CA::/48`[cite: 42].
+* **Rol VTP:** Server (Administra las VLANs de todas las regiones: Centro, Noreste, Sureste)[cite: 45].
+* **Protocolo de Ruteo:** RIPv2 y RIPng (IPv6)[cite: 16].
+* **Direccionamiento:** Dual Stack (IPv4 / IPv6) con prefijo global `2006:AFEA:B0CA::/48`[cite: 42].
 
 
 ## Tecnologías Implementadas
