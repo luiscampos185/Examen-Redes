@@ -1,0 +1,64 @@
+router la silla
+enable
+configure terminal
+
+
+hostname LaSilla
+enable secret cisco123
+service password-encryption
+
+ip domain-name JuanMark.com
+username ADMIN privilege 15 secret cisco111
+crypto key generate rsa modulus 1024
+ip ssh version 2
+line vty 0 4
+ transport input ssh
+ login local
+exit
+line console 0
+ logging synchronous
+exit
+
+interface Serial0/2/0
+ description WAN_Hacia_Sureste
+ ip address 148.60.200.6 255.255.255.252
+ no shutdown
+exit
+
+interface GigabitEthernet0/0
+ no shutdown
+
+interface GigabitEthernet0/0.97
+ encapsulation dot1Q 97 native
+ ip address 148.60.97.2 255.255.255.0
+ standby 97 ip 148.60.97.1
+ standby 97 priority 110
+ standby 97 preempt
+exit
+
+interface GigabitEthernet0/0.98
+ encapsulation dot1Q 98
+ ip address 148.60.98.2 255.255.255.0
+ standby 98 ip 148.60.98.1
+ standby 98 priority 110
+ standby 98 preempt
+exit
+
+
+interface GigabitEthernet0/0.99
+ encapsulation dot1Q 99
+ ip address 148.60.99.2 255.255.255.0
+ standby 99 ip 148.60.99.1
+ standby 99 priority 110
+ standby 99 preempt
+exit
+
+interface GigabitEthernet0/0.100
+ encapsulation dot1Q 100
+ ip address 148.60.100.2 255.255.255.0
+ standby 100 ip 148.60.100.1
+ standby 100 priority 110
+ standby 100 preempt
+exit
+
+end
