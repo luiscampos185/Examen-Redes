@@ -1,0 +1,36 @@
+Router el cabrito
+
+enable
+configure terminal
+
+hostname ElCabrito
+enable secret cisco123
+service password-encryption
+
+ip domain-name JuanMark.com
+username ADMIN privilege 15 secret cisco111
+crypto key generate rsa modulus 1024
+ip ssh version 2
+line vty 0 4
+ transport input ssh
+ login local
+exit
+line console 0
+ logging synchronous
+exit
+
+interface GigabitEthernet0/0
+ no shutdown
+exit
+interface GigabitEthernet0/1
+ no shutdown
+exit
+
+interface Serial0/2/0
+ description WAN_Hacia_Centro
+ ip address 148.60.200.13 255.255.255.252
+ no shutdown
+exit
+
+end
+write memory
