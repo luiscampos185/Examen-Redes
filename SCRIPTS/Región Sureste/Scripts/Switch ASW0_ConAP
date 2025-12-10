@@ -1,0 +1,62 @@
+enable
+configure terminal
+hostname ASW0_ConAP
+
+ip domain-name juanmark.com
+username admin secret Cisco123
+crypto key generate rsa general-keys modulus 1024
+line vty 0 4
+ transport input ssh
+ login local
+ exit
+service password-encryption
+
+vtp domain JuanMark
+vtp version 2
+vtp mode client
+vtp password cisco
+no ip domain-lookup
+
+interface range g0/1-2
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+ no shutdown
+exit
+
+interface f0/3
+ description Link_to_AP
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk native vlan 66
+ switchport trunk allowed vlan 1,65-68
+ no shutdown
+exit
+
+interface range f0/1-2, f0/4-5
+ switchport mode access
+ switchport access vlan 65
+ spanning-tree portfast
+ switchport port-security
+exit
+
+interface range f0/6-10
+ switchport mode access
+ switchport access vlan 66
+ spanning-tree portfast
+ switchport port-security
+exit
+
+interface range f0/11-15
+ switchport mode access
+ switchport access vlan 67
+ spanning-tree portfast
+ switchport port-security
+exit
+
+interface range f0/16-20
+ switchport mode access
+ switchport access vlan 68
+ spanning-tree portfast
+ switchport port-security
+exit
