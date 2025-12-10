@@ -1,46 +1,74 @@
-Proyecto de Red Nacional - JuanMark.com
+# Proyecto de Red Corporativa - Región Noroeste (NW)
 
-Descripción del Proyecto
-Este proyecto consiste en el diseño e implementación de la infraestructura de red para la compañía **JuanMark**. El objetivo es interconectar diferentes regiones geográficas de México mediante una topología WAN, asegurando servicios de alta disponibilidad, seguridad y convergencia.
+Este repositorio contiene el diseño y configuración de la infraestructura de red para la sucursal Noroeste. El proyecto implementa una arquitectura basada en la alineación lógica de segmentos IP con VLANs, soportando IPv4/IPv6 y enrutamiento centralizado.
 
-El diseño global abarca la red `148.60.0.0/16` e implementa **Dual Stack (IPv4 e IPv6)**[cite: 16, 42].
+## Descripción General
 
-Topología: Región Noroeste
-Este repositorio contiene la configuración específica de la Región Noroeste, la cual actúa como un punto crítico de la red al albergar la conexión a **Internet** y funcionar como el **Servidor VTP** maestro para toda la organización.
-
-Características de la Región
-* **Rol VTP:** Server (Administra las VLANs de todas las regiones: Centro, Noreste, Sureste).
-* **Protocolo de Ruteo:** RIPv2 y RIPng (IPv6).
-* **Direccionamiento:** Dual Stack (IPv4 / IPv6) con prefijo global `2006:AFEA:B0CA::/48`.
-
+La topología conecta con tres regiones externas (Centro, Noreste, Sureste) e Internet mediante enlaces seriales. La red local (LAN) utiliza un diseño de Router-on-a-Stick para el enrutamiento entre VLANs, con gestión centralizada de dominios de difusión y seguridad en capa de acceso.
 
 ## Tecnologías Implementadas
-De acuerdo a los requerimientos técnicos, se han configurado los siguientes servicios:
 
-1.  **VTP (Vlan Trunking Protocol):**
-    * Modo: **Server**
-    * Dominio: `juanmark`
-    * Versión: 2
-    * *Todas las VLANs de la organización (33-37, 65-68, 97-100) se crean aquí.*
+* **Dual Stack (IPv4/IPv6):** Implementación simultánea de protocolos de direccionamiento.
+* **Router-on-a-Stick:** Enrutamiento InterVLAN mediante subinterfaces lógicas.
+* **VTP:** Protocolo de Trunking de VLANs en modo Servidor.
+* **DHCP:** Servidor configurado en el Router para asignación dinámica.
+* **Port Security:** Restricción de acceso físico con aprendizaje "Sticky".
+* **SSH:** Gestión remota cifrada con llaves RSA.
+* **RIP:** Enrutamiento dinámico para convergencia con otras regiones.
 
-2.  **Seguridad de Capa 2:**
-    * **Trunks:** Configurados sin negociación (`switchport nonegotiate`) para evitar DTP.
-    * **SSH:** Habilitado en todos los dispositivos para gestión remota segura (v2).
-    * **Seguridad de Puertos:** Restricción de MACs en puertos de acceso.
+## Información de Red
 
-3.  **Servicios de Red:**
-    * **DHCPv4:** Pools configurados para asignación dinámica de IPs en cada VLAN.
-    * **Ruteo Inter-VLAN:** Configurado mediante *Router-on-a-Stick* en el Gateway Noroeste.
+### VLANs Configuradas
+La VLAN 9 se utiliza como Nativa en enlaces troncales y para gestión.
 
- Instrucciones de Despliegue (Multiusuario)
-Para integrar esta región con el resto de la topología nacional:
+| ID | Nombre | Subred IPv4 | Prefijo IPv6 | Uso |
+| :--- | :--- | :--- | :--- | :--- |
+| **9** | NW_TI | 148.60.9.0/24 | ...:9::/64 | Gestión TI (Nativa) |
+| **5** | NW_MKT | 148.60.5.0/24 | ...:5::/64 | Marketing |
+| **6** | NW_VENTAS | 148.60.6.0/24 | ...:6::/64 | Ventas |
+| **7** | NW_COMPRAS | 148.60.7.0/24 | ...:7::/64 | Compras |
 
-1.  **Requisitos:** Cisco Packet Tracer 8.x o superior.
-2.  **Conexión VPN:** Asegurarse de estar conectado a la VPN del equipo para la funcionalidad Multiusuario.
-3.  **Pasos:**
-    * Abrir el archivo `.pkt` de la región Noroeste.
-    * Verificar que el estado del puerto "Multiusuario" esté en *Listening*.
-    * Coordinar con las regiones **Centro** y **Noreste** para establecer el enlace en las IPs WAN designadas.
+### Direccionamiento Clave
 
-*Proyecto para la materia de conmutación: JuanMark.com*
+| Dispositivo | Interfaz | Rol | IP Gateway |
+| :--- | :--- | :--- | :--- |
+| **R1 (Router)** | G0/0.x | Gateway / DHCP | .1 (Subinterfaces) |
+| **SW3** | VLAN 9 | VTP Server | .4 |
 
+## Detalles de Configuración
+
+1.  **Enrutamiento InterVLAN:**
+    * **Router R1:** Configurado con encapsulamiento dot1q en subinterfaces (G0/0.5, .6, .7, .9).
+    * **Direccionamiento:** El 3er octeto (IPv4) y 4to hexteto (IPv6) coinciden con el ID de VLAN para facilitar administración.
+
+2.  **Gestión de VLANs (VTP):**
+    * **Switch 3:** Modo Server.
+    * **Switches 1, 2, 4:** Modo Client.
+    * **Dominio:** NOROESTE.
+
+3.  **Seguridad de Puertos:**
+    * Puertos de acceso limitados a 1 dirección MAC.
+    * Aprendizaje de direcciones: Sticky.
+    * Acción de violación: Shutdown.
+
+4.  **Enlaces Troncales:**
+    * Modo estático (`mode trunk`) sin negociación DTP.
+    * Filtrado de VLANs activado (Allowed VLAN 5,6,7,9).
+
+## Credenciales de Acceso
+
+* **Usuario:** ADMIN
+* **Password:** cisco111
+* **Enable Secret:** cisco123
+* **Dominio:** juanmarket.com
+* **VTP Password:** cisco123
+
+## Instrucciones de Validación
+1.  Abrir el archivo `JuanMark-Noreste.pkt` en Cisco Packet Tracer.
+2.  Verificar que las PCs obtengan IP y DNS mediante DHCP (`ipconfig /all`).
+3.  Comprobar conectividad mediante ping a las regiones remotas:
+    * Noreste: `148.60.98.103`.
+    * Sureste: `148.60.65.8`.
+    * Centro: `148.60.33.12`.
+4.  Validar acceso seguro SSH al Switch VTP Server (`148.60.9.4`).
+5.  Confirmar bloqueo de puerto conectando un dispositivo no autorizado (Port Security).
