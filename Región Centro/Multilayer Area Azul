@@ -1,80 +1,82 @@
-!--Multilayer Area Azul
 enable
 configure terminal
-hostname MLS-Azul
 
-!--port channel
-interface range GigabitEthernet0/1 - 2
-shutdown
-channel-protocol pagp
-channel-group 1 mode desirable
-no shutdown
+hostname Multilayer-Zona-Azul
+no service password-encryption
+
+ip routing
+no ip cef
+no ipv6 cef
+username ADMIN privilege 15 password 0 123
+
+ip ssh version 2
+ip domain-name JuanMark.com
+spanning-tree mode pvst
+
+ip arp inspection vlan 33-37
+ip dhcp snooping vlan 33-37
+no ip dhcp snooping information option
+ip dhcp snooping
+ip flow-export version 9
+
+vlan 33
+vlan 34
+vlan 35
+vlan 36
+vlan 37
 exit
 
-interface port-channel 1
-switchport trunk encapsulation dot1q
-switchport mode trunk
-switchport nonegotiate
-switchport trunk allowed vlan 33-37,1
-exit
-
-
-!---Trunk hacia Switch Acceso Azuk
-interface FastEthernet0/1
-description Bajada-a-Switch-Acceso-Azul
-switchport trunk encapsulation dot1q
-switchport mode trunk
-switchport nonegotiate
-switchport trunk allowed vlan 33-37,1
-no shutdown
-exit
-
-!---puertos de acceso
-
-interface FastEthernet0/3
+interface range GigabitEthernet1/0/1-19
 switchport mode access
-switchport access vlan 36
-no shutdown
+switchport port-security
+switchport port-security mac-address sticky
 exit
 
-interface FastEthernet0/10
-switchport mode access
-switchport access vlan 36
-no shutdown
-exit
-
-interface FastEthernet0/4
-switchport trunk encapsulation dot1q
+interface range GigabitEthernet1/0/20-24
+switchport trunk native vlan 34
+switchport trunk allowed vlan 33-37
 switchport mode trunk
 switchport nonegotiate
-switchport trunk allowed vlan 33-37,1
 ip dhcp snooping trust
 ip arp inspection trust
+exit
+
+interface range GigabitEthernet1/0/20-24
+switchport trunk native vlan 34
+switchport trunk allowed vlan 33-37
+switchport mode trunk
+switchport nonegotiate
+ip dhcp snooping trust
+ip arp inspection trust
+exit
+
+interface Vlan1
+no ip address
+shutdown
+exit
+
+interface Vlan34
+ip address 148.60.34.8 255.255.255.0
 no shutdown
 exit
 
-
-!--DAI
-ip arp inspection vlan 33-37
-ip arp inspection validate src-mac dst-mac ip
-
-interface range GigabitEthernet0/1 - 2
-ip arp inspection trust
+interface Vlan33
+no ip address
+exit
+interface Vlan35
+no ip address
+exit
+interface Vlan36
+no ip address
+exit
+interface Vlan37
+no ip address
 exit
 
-interface FastEthernet0/4
-ip arp inspection trust
-exit
+ip default-gateway 148.60.34.1
 
-interface FastEthernet0/3
-ip arp inspection trust
-exit
-
-!--VTP cliente
-
-vtp domain juanmark
-vtp version 2
-vtp mode client
-vtp password cisco
+line vty 0 4
+login local
+transport input ssh
 exit
 
