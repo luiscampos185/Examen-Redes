@@ -1,0 +1,75 @@
+! SW2
+
+! INICIO DE CONFIGURACIÓN SW2
+enable
+configure terminal
+hostname SW2
+
+! 1. CONFIGURACIÓN VTP
+vtp domain NOROESTE
+vtp mode client
+vtp password cisco123
+vtp version 2
+
+! 2. CONFIGURACIÓN DE PUERTOS TRONCALES
+interface range FastEthernet0/1-3
+switchport mode trunk
+switchport trunk native vlan 9
+switchport trunk allowed vlan 5,6,7,9
+no shutdown
+exit
+
+! 3. ASIGNACIÓN DE VLANS A PUERTOS
+! Puertos Marketing (VLAN 5)
+interface range FastEthernet0/13-15
+switchport mode access
+switchport access vlan 5
+exit
+
+! Puertos Ventas (VLAN 6)
+interface range FastEthernet0/16-18
+switchport mode access
+switchport access vlan 6
+exit
+
+! Puertos Compras (VLAN 7)
+interface range FastEthernet0/19-21
+switchport mode access
+switchport access vlan 7
+exit
+
+! Puertos TI (VLAN 9)
+interface range FastEthernet0/22-24
+switchport mode access
+switchport access vlan 9
+exit
+
+! 4. SEGURIDAD DE PUERTOS
+interface range FastEthernet0/13-24
+switchport mode access
+switchport port-security
+switchport port-security maximum 1
+switchport port-security mac-address sticky
+switchport port-security violation shutdown
+exit
+
+! 5. SEGURIDAD SSH Y GESTIÓN
+ip domain-name juanmarket.com
+username ADMIN privilege 15 secret cisco111
+enable secret cisco123
+crypto key generate rsa general-keys modulus 1024
+ip ssh version 2
+line vty 0 15
+transport input ssh
+login local
+exit
+
+! 6. INTERFAZ DE ADMINISTRACIÓN
+interface vlan 9
+description Administracion SW2
+ip address 148.60.9.3 255.255.255.0
+no shutdown
+exit
+
+! Gateway
+ip default-gateway 148.60.9.1
