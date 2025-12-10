@@ -1,0 +1,84 @@
+enable
+configure terminal
+hostname DSW1
+vtp domain JuanMark
+vtp version 2
+vtp mode server
+vtp password cisco
+
+ip domain-name juanmark.com
+username admin secret Cisco123
+crypto key generate rsa general-keys modulus 1024
+line vty 0 4
+ transport input ssh
+ login local
+ exit
+service password-encryption
+
+vlan 65
+ name Ventas
+vlan 66
+ name Gestion_TI
+vlan 67
+ name Compras
+vlan 68
+ name MKT
+exit
+
+interface range g1/0/1-2
+ channel-protocol pagp
+ channel-group 1 mode desirable
+ no shutdown
+ exit
+
+interface range g1/0/3-4
+ channel-protocol pagp
+ channel-group 2 mode desirable
+ no shutdown
+ exit
+
+interface range g1/0/5-6
+ channel-protocol pagp
+ channel-group 3 mode desirable
+ no shutdown
+ exit
+
+interface Port-channel 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+ exit
+
+interface Port-channel 2
+ ! Si el switch es Capa 3 (Multilayer), descomenta la siguiente línea:
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+ exit
+
+interface Port-channel 3
+ ! Si el switch es Capa 3 (Multilayer), descomenta la siguiente línea:
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+ exit
+
+interface gig1/0/7
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+ exit
+
+interface g1/0/24
+  switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+ no shutdown
+ exit
+spanning-tree vlan 65,66 root primary
+spanning-tree vlan 67,68 root secondary
