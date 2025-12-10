@@ -1,0 +1,132 @@
+! ROUTER
+
+! INICIO DE CONFIGURACIÓN IPV4
+enable
+configure terminal
+
+! 1. CONFIGURACIÓN DE INTERFACES (Router-on-a-Stick)
+interface GigabitEthernet0/0
+no shutdown
+exit
+
+! VLAN 5 - Marketing
+interface GigabitEthernet0/0.5
+description Gateway VLAN 5 - MKT
+encapsulation dot1Q 5
+ip address 148.60.5.1 255.255.255.0
+exit
+
+! VLAN 6 - Ventas
+interface GigabitEthernet0/0.6
+description Gateway VLAN 6 - VENTAS
+encapsulation dot1Q 6
+ip address 148.60.6.1 255.255.255.0
+exit
+
+! VLAN 7 - Compras
+interface GigabitEthernet0/0.7
+description Gateway VLAN 7 - COMPRAS
+encapsulation dot1Q 7
+ip address 148.60.7.1 255.255.255.0
+exit
+
+! VLAN 9 - TI
+interface GigabitEthernet0/0.9
+description Gateway VLAN 9 - TI (NATIVA)
+encapsulation dot1Q 9 native
+ip address 148.60.9.1 255.255.255.0
+exit
+
+! 2. EXCLUSIONES DE DHCP
+ip dhcp excluded-address 148.60.5.1 148.60.5.10
+ip dhcp excluded-address 148.60.6.1 148.60.6.10
+ip dhcp excluded-address 148.60.7.1 148.60.7.10
+ip dhcp excluded-address 148.60.9.1 148.60.9.10
+
+! 3. POOLS DE DHCP
+! Pool Marketing
+ip dhcp pool NW_MKT
+network 148.60.5.0 255.255.255.0
+default-router 148.60.5.1
+exit
+
+! Pool Ventas
+ip dhcp pool NW_VENTAS
+network 148.60.6.0 255.255.255.0
+default-router 148.60.6.1
+exit
+
+! Pool Compras
+ip dhcp pool NW_COMPRAS
+network 148.60.7.0 255.255.255.0
+default-router 148.60.7.1
+exit
+
+! Pool TI
+ip dhcp pool NW_TI
+network 148.60.9.0 255.255.255.0
+default-router 148.60.9.1
+exit
+
+! INICIO CONFIGURACIÓN IPV6
+enable
+configure terminal
+ipv6 unicast-routing
+
+! 1. POOLS DE DHCPv6
+! Pool Marketing
+ipv6 dhcp pool NW_MKTv6
+address prefix 2006:AFEA:B0CA:5::/64
+domain-name mkt.local
+exit
+
+! Pool Ventas
+ipv6 dhcp pool NW_VENTASv6
+address prefix 2006:AFEA:B0CA:6::/64
+domain-name ventas.local
+exit
+
+! Pool Compras
+ipv6 dhcp pool NW_COMPRASv6
+address prefix 2006:AFEA:B0CA:7::/64
+domain-name compras.local
+exit
+! Pool TI
+ipv6 dhcp pool NW_TIv6
+address prefix 2006:AFEA:B0CA:9::/64
+domain-name ti.local
+exit
+
+! 2. ASIGNACIÓN A SUBINTERFACES
+! VLAN 5 - MKT
+interface GigabitEthernet0/0.5
+ipv6 address 2006:AFEA:B0CA:5::1/64
+ipv6 dhcp server NW_MKTv6
+ipv6 nd managed-config-flag
+ipv6 nd other-config-flag
+exit
+
+! VLAN 6 - VENTAS
+interface GigabitEthernet0/0.6
+ipv6 address 2006:AFEA:B0CA:6::1/64
+ipv6 dhcp server NW_VENTASv6
+ipv6 nd managed-config-flag
+ipv6 nd other-config-flag
+exit
+
+! VLAN 7 - COMPRAS
+interface GigabitEthernet0/0.7
+ipv6 address 2006:AFEA:B0CA:7::1/64
+ipv6 dhcp server NW_COMPRASv6
+ipv6 nd managed-config-flag
+ipv6 nd other-config-flag
+exit
+
+! VLAN 9 - TI
+interface GigabitEthernet0/0.9
+ipv6 address 2006:AFEA:B0CA:9::1/64
+ipv6 dhcp server NW_TIv6
+ipv6 nd managed-config-flag
+ipv6 nd other-config-flag
+exit
+ 
