@@ -1,0 +1,49 @@
+enable
+configure terminal
+hostname ASW4
+
+vtp domain JuanMark
+vtp version 2
+vtp mode client
+vtp password cisco
+
+interface range g1/0/1-2
+ channel-protocol pagp
+ channel-group 1 mode desirable
+ no shutdown
+exit
+
+interface Port-channel 1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+exit
+
+interface g1/0/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+exit
+
+interface g1/0/4
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+exit
+
+interface g1/0/5
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+exit
+
+interface g1/0/6
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ switchport trunk allowed vlan 1,65-68
+exit
