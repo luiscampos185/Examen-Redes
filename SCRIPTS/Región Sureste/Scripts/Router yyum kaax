@@ -1,0 +1,64 @@
+enable
+configure terminal
+hostname Router_YumKaax
+
+ip domain-name juanmark.com
+username admin secret Cisco123
+crypto key generate rsa general-keys modulus 1024
+line vty 0 4
+ transport input ssh
+ login local
+ exit
+service password-encryption
+
+! --- 1. Enrutamiento Dinámico ---
+router rip
+ version 2
+ network 148.60.0.0
+ no auto-summary
+ passive-interface g0/0/0.65
+ passive-interface g0/0/0.66
+ passive-interface g0/0/0.67
+ passive-interface g0/0/0.68
+ exit
+
+! --- 2. Subinterfaces y HSRP (Standby) ---
+interface g0/0/0
+ no shutdown
+ exit
+
+interface g0/0/0.65
+ encapsulation dot1Q 65
+ ip address 148.60.65.3 255.255.255.0
+ standby 65 ip 148.60.65.1
+ standby 65 priority 100
+ standby 65 preempt
+ exit
+
+interface g0/0/0.66
+ encapsulation dot1Q 66
+ ip address 148.60.66.3 255.255.255.0
+ standby 66 ip 148.60.66.1
+ standby 66 priority 100
+ standby 66 preempt
+ exit
+
+interface g0/0/0.67
+ encapsulation dot1Q 67
+ ip address 148.60.67.3 255.255.255.0
+ standby 67 ip 148.60.67.1
+ standby 67 priority 100
+ standby 67 preempt
+ exit
+interface g0/0/0.68
+ encapsulation dot1Q 68
+ ip address 148.60.68.3 255.255.255.0
+ standby 68 ip 148.60.68.1
+ standby 68 priority 100
+ standby 68 preempt
+ exit
+
+interface Serial0/0/0
+ description Enlace_a_Itzamna
+ ip address 148.60.0.2 255.255.255.252
+no shutdown
